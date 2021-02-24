@@ -8,7 +8,7 @@ public class ProgressiveSum {
 		boolean isValid = false;
 		Scanner keyboard = new Scanner(System.in);
 		int upperLimit = 0;
-		while (isValid = false) {
+		while (isValid == false) {
 			System.out.println("Please enter a positive (non-zero) number as the upper limit.");
 			upperLimit = keyboard.nextInt();
 			if (upperLimit < 1) {
@@ -27,6 +27,8 @@ public class ProgressiveSum {
 			System.out.println(total);
 		}
 		
+		//output
+		System.out.println("The final total is " + total);
 		
 	}
 }
