@@ -1,38 +1,40 @@
 import java.util.Scanner;
 
 public class DriverExam {
-    /**
-     * Initializes the constant of the exam answers and creates a space to be checked against
-     */
-    char[][] examAnswers = {
-            {'Z', 'Z'}, //initializes a 20x2 instead of a 20x1
-            {'B'}, {'D'}, {'A'}, {'A'}, {'C'},
-            {'A'}, {'B'}, {'A'}, {'C'}, {'D'},
-            {'B'}, {'C'}, {'D'}, {'A'}, {'D'},
-            {'C'}, {'C'}, {'B'}, {'D'}, {'A'}
+     // the correct answer constant to be checked against
+    char[] CORRECT_ANSWERS = {
+            'B', 'D', 'A', 'A', 'C',
+            'A', 'B', 'A', 'C', 'D',
+            'B', 'C', 'D', 'A', 'D',
+            'C', 'C', 'B', 'D', 'A'
     };
 
-    /**
-     * the error message that appears whwn there is a validation error
-     */
+    // the user's stored answers
+    char[] userAnswers = new char[20];
+
+    // the error message that appears when there is a validation error
     String invalidErrorMessage = "This answer is invalid. Please try again...";
 
-    /**
-     * Get Exam Answers
-     *
-     * @return Exam answers
-     */
-    public char[][] getExamAnswers() {
-        return examAnswers;
+    public char getCORRECT_ANSWER(int i) {
+        return CORRECT_ANSWERS[i];
     }
 
     /**
-     * Set exam answers
-     *
-     * @param examAnswers
+     * Get a single user answer
+     * @param i the index of the answer
+     * @return the char value at the index
      */
-    public void setExamAnswers(char[][] examAnswers) {
-        this.examAnswers = examAnswers;
+    public char getUserAnswer(int i) {
+        return this.userAnswers[i];
+    }
+
+    /**
+     * set a single answer
+     * @param i the index of the answer we are setting
+     * @param answer the answer to be set
+     */
+    public void addUserAnswer(int i, char answer) {
+        this.userAnswers[i] = answer;
     }
 
     /**
@@ -41,11 +43,7 @@ public class DriverExam {
      * @return whether or not it is a valid answer
      */
     public boolean isValid(char input) {
-        if (input == 'A' || input == 'B' || input == 'C' || input == 'D') {
-            return true;
-        } else {
-            return false;
-        }
+        return (input == 'A' || input == 'B' || input == 'C' || input == 'D');
     }
 
     /**
@@ -56,24 +54,26 @@ public class DriverExam {
         Scanner keyboard = new Scanner(System.in);
         boolean readyForNext = false;
         char userInput;
+        // validate before continuing
         do {
             userInput = keyboard.next().charAt(0);
-            if (isValid(userInput)==true) {
+            if (isValid(userInput)) {
                 readyForNext = true;
             }
             else {
                 System.out.println(invalidErrorMessage);
             }
-        } while (readyForNext == false);
-        // SET userInput TO examAnswers[questionNumber][1]
+        } while (!readyForNext);
+        // add answer
+        addUserAnswer(questionNumber, userInput);
     }
 
     /**
      * Takes input from user and places it in the examAnswers[][1] column until through to the end.
      */
-    public void takeExam() {
+    public void fullExam() {
         System.out.println("The exam has begun.");
-        for (int questionNumber = 1; questionNumber < examAnswers.length; questionNumber++) {
+        for (int questionNumber = 1; questionNumber < CORRECT_ANSWERS.length; questionNumber++) {
             System.out.println("Enter the answer to Question " + questionNumber);
             answerQuestion(questionNumber);
         }
