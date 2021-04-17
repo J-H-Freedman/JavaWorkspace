@@ -53,11 +53,20 @@ public class DriverExam {
 
     /**
      * Validates answers as A, B, C, or D
-     * @param input the answer in question
+     * @param i the answer in question
      * @return whether or not it is a valid answer
      */
-    public boolean isValid(char input) {
-        return (input == 'A' || input == 'B' || input == 'C' || input == 'D');
+    boolean answerIsValid(char i) {
+        return (i == 'A' || i == 'B' || i == 'C' || i == 'D');
+    }
+
+    /**
+     * Validates nav location
+     * @param i nav location in question
+     * @return whether or not the location is valid
+     */
+    boolean navIsValid(int i) {
+        return (1 <= i && i <= CORRECT_ANSWERS.length);
     }
 
     /**
@@ -71,7 +80,7 @@ public class DriverExam {
         // validate before continuing
         do {
             userInput = Character.toUpperCase(keyboard.next().charAt(0));
-            if (isValid(userInput)) {
+            if (answerIsValid(userInput)) {
                 readyForNext = true;
             }
             else {
@@ -87,7 +96,7 @@ public class DriverExam {
      * @param i the input to decide where to go next
      */
     void navigate(int i) {
-        if (1 <= i && i <= CORRECT_ANSWERS.length) {
+        if (navIsValid(i)) {
             navTracker = i-1;
         }
         else if (i == -1) {
@@ -120,7 +129,7 @@ public class DriverExam {
         System.out.println("Please select which question you would like to navigate to:");
         do {
             int i = keyboard.nextInt();
-            if (1 <= i && i <= CORRECT_ANSWERS.length) {
+            if (navIsValid(i)) {
                 navigate(i);
                 selectionCompleted = true;
             }
@@ -136,9 +145,9 @@ public class DriverExam {
     void navMenu() {
         boolean navCompleted = false;
         if (navTracker == 0) {
+            System.out.println("Type \"next\" or \"select\"");
             do {
-                System.out.println("Type \"next\" or \"select\"");
-                String navInput = keyboard.nextLine().toLowerCase();
+                String navInput = keyboard.next().toLowerCase();
                 switch (navInput) {
                     case "next" -> {
                         navNext();
@@ -148,14 +157,16 @@ public class DriverExam {
                         navSelect();
                         navCompleted = true;
                     }
-                    default -> System.out.println(invalidErrorMessage);
+                    default -> {
+                        System.out.println(invalidErrorMessage);
+                    }
                 }
             } while (!navCompleted);
         }
         else if (navTracker == (DriverExam.CORRECT_ANSWERS.length-1)) {
+            System.out.println("Type \"prev,\" \"select,\" or \"finish\"");
             do {
-                System.out.println("Type \"prev,\" \"select,\" or \"finish\"");
-                String navInput = keyboard.nextLine().toLowerCase();
+                String navInput = keyboard.next().toLowerCase();
                 switch (navInput) {
                     case "prev" -> {
                         navPrev();
@@ -169,17 +180,18 @@ public class DriverExam {
                         navSelect();
                         navCompleted = true;
                     }
-                    default -> System.out.println(invalidErrorMessage);
+                    default -> {
+                        System.out.println(invalidErrorMessage);
+                    }
                 }
             } while (!navCompleted);
         }
         else {
+            System.out.println("Type \"prev,\" \"next,\" or \"select\"");
             do {
-                System.out.println("Type \"prev,\" \"next,\" or \"select\"");
-                String navInput = keyboard.nextLine().toLowerCase();
+                String navInput = keyboard.next().toLowerCase();
                 switch (navInput) {
                     case "prev" -> {
-                        navPrev();
                         navCompleted = true;
                     }
                     case "next" -> {
@@ -187,10 +199,13 @@ public class DriverExam {
                         navCompleted = true;
                     }
                     case "select" -> {
+                        keyboard.reset();
                         navSelect();
                         navCompleted = true;
                     }
-                    default -> System.out.println(invalidErrorMessage);
+                    default -> {
+                        System.out.println(invalidErrorMessage);
+                    }
                 }
             } while (!navCompleted);
         }
@@ -233,7 +248,7 @@ public class DriverExam {
         for (int i=0; i<testAnswers.length; i++) {
             test.addUserAnswer(i, testAnswers[i]);
             System.out.print(test.getUserAnswer(i));
-            System.out.println(test.isValid(test.userAnswers[i]));
+            System.out.println(test.answerIsValid(test.userAnswers[i]));
         }
     }
 }
