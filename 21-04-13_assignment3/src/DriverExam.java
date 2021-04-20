@@ -1,6 +1,9 @@
 import java.util.Scanner;
 
 public class DriverExam {
+    // keyboard input
+    Scanner keyboard = new Scanner(System.in);
+
      // the correct answer constant to be checked against
     static char[] CORRECT_ANSWERS = {
             'B', 'D', 'A', 'A', 'C',
@@ -8,6 +11,8 @@ public class DriverExam {
             'B', 'C', 'D', 'A', 'D',
             'C', 'C', 'B', 'D', 'A'
     };
+
+
 
     // the user's stored answers
     char[] userAnswers = new char[CORRECT_ANSWERS.length];
@@ -21,8 +26,7 @@ public class DriverExam {
     // is the exam completed?
     boolean examCompleted = false;
 
-    // keyborad input
-    Scanner keyboard = new Scanner(System.in);
+    // ---
 
     /**
      * get a specific correct answer
@@ -38,9 +42,11 @@ public class DriverExam {
      * @param i the index of the answer
      * @return the char value at the index
      */
-    public char getUserAnswer(int i) {
+    public Character getUserAnswer(int i) {
         return this.userAnswers[i];
     }
+
+    // ---
 
     /**
      * set a single answer
@@ -60,14 +66,6 @@ public class DriverExam {
         return (i == 'A' || i == 'B' || i == 'C' || i == 'D');
     }
 
-    /**
-     * Validates nav location
-     * @param i nav location in question
-     * @return whether or not the location is valid
-     */
-    boolean navIsValid(int i) {
-        return (1 <= i && i <= CORRECT_ANSWERS.length);
-    }
 
     /**
      * Answer an individual question from the exam
@@ -91,19 +89,30 @@ public class DriverExam {
         addUserAnswer(questionNumber, userInput);
     }
 
+    // ---
+
+    /**
+     * Validates nav location
+     * @param i nav location in question
+     * @return whether or not the location is valid
+     */
+    boolean navIsValid(int i) {
+        return (1 <= i && i <= CORRECT_ANSWERS.length);
+    }
+
     /**
      * Navigate which question will be asked next
      * @param i the input to decide where to go next
      */
     void navigate(int i) {
         if (navIsValid(i)) {
-            navTracker = i-1;
+            this.navTracker = i-1;
         }
         else if (i == -1) {
-            navTracker--;
+            this.navTracker--;
         }
         else if (i == 0) {
-            navTracker++;
+            this.navTracker++;
         }
     }
 
@@ -144,6 +153,7 @@ public class DriverExam {
      */
     void navMenu() {
         boolean navCompleted = false;
+        //for the first question
         if (navTracker == 0) {
             System.out.println("Type \"next\" or \"select\"");
             do {
@@ -163,6 +173,7 @@ public class DriverExam {
                 }
             } while (!navCompleted);
         }
+        // for the last question
         else if (navTracker == (DriverExam.CORRECT_ANSWERS.length-1)) {
             System.out.println("Type \"prev,\" \"select,\" or \"finish\"");
             do {
@@ -186,6 +197,7 @@ public class DriverExam {
                 }
             } while (!navCompleted);
         }
+        //for the rest of the questions
         else {
             System.out.println("Type \"prev,\" \"next,\" or \"select\"");
             do {
@@ -211,45 +223,59 @@ public class DriverExam {
         }
     }
 
-    /* how many correct
+    // ---
+
+    /**
+     * How many of the user's answers are correct
+     * @return the amount of correct answers
+     */
+    int totalCorrect() {
+        int counter = 0;
+        for (int i = 0; i < CORRECT_ANSWERS.length; i++) {
+            if (getUserAnswer(i) == getCORRECT_ANSWER(i)) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
-    create counter
-    for i in examAnswers.length
-        if examAnswers[i][0]==examAnswers[i][1]
-            counter++
-    return counter */
-
-    /* how many incorrect
-    create counter
-    for i in examAnswers.length
-        if examAnswers[i][0]==!examAnswers[i][1]
-            counter++
-    return counter */
-
-    /* how many empty
-    create counter
-    for i in examAnswers.length
-        if examAnswers[i][1] == null
-            counter++
-    return counter */
-
-    public static void main(String[] args) {
-        DriverExam test = new DriverExam();
-        char[] testAnswers = {
-                'A', 'B', 'C', 'D', 'E',
-                'a', 'b', 'c', 'd', 'e', ' '
-         };
-
-        for (int i=0; i<CORRECT_ANSWERS.length; i++) {
-            System.out.print(getCORRECT_ANSWER(i));
+    /**
+     * ow many of the user's answers are incorrect
+     *      * @return the amount of incorrect answers
+     */
+    int totalIncorrect() {
+        int counter = 0;
+        for (int i = 0; i < CORRECT_ANSWERS.length; i++) {
+            if (getUserAnswer(i) != getCORRECT_ANSWER(i)) {
+                counter++;
+            }
         }
+        return counter;
+    }
 
-        for (int i=0; i<testAnswers.length; i++) {
-            test.addUserAnswer(i, testAnswers[i]);
-            System.out.print(test.getUserAnswer(i));
-            System.out.println(test.answerIsValid(test.userAnswers[i]));
+    /**
+     * Did the user pass the exam?
+     * @return whether the user passed or failed
+     */
+    boolean quizPassed() {
+        return (totalCorrect()>15);
+    }
+
+    /**
+     * An array of the questions missed
+     * @return the missed questions
+     */
+    int[] questionsMissed() {
+        int[] missed = new int[totalIncorrect()];
+        int key = 0;
+        {
+            for (int i = 0; i < CORRECT_ANSWERS.length; i++) {
+                if (getUserAnswer(i) != getCORRECT_ANSWER(i)) {
+                    missed[key] = i+1;
+                    key++;
+                }
+            }
         }
+        return missed;
     }
 }
-
